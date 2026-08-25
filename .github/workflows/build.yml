@@ -22,7 +22,8 @@ jobs:
       - name: Télécharger automatiquement la bibliothèque ANT+ manquante
         run: |
           mkdir -p app/libs
-          curl -L "https://raw.githubusercontent.com/kgurney/FatMaxxer/master/app/libs/android_antlib_4-14-0.jar" -o app/libs/android_antlib_4-14-0.jar || curl -L "https://raw.githubusercontent.com/kgurney/FatMaxxer/main/app/libs/android_antlib_4-14-0.jar" -o app/libs/android_antlib_4-14-0.jar
+          rm -f app/libs/android_antlib_4-14-0.jar
+          curl -fSL "https://raw.githubusercontent.com/kgurney/FatMaxxer/master/app/libs/android_antlib_4-14-0.jar" -o app/libs/android_antlib_4-14-0.jar || curl -fSL "https://raw.githubusercontent.com/kgurney/FatMaxxer/main/app/libs/android_antlib_4-14-0.jar" -o app/libs/android_antlib_4-14-0.jar
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
