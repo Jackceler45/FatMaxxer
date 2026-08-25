@@ -2139,9 +2139,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean bleServiceStarted = false;
     boolean mBound = false;
-  if (bleService != null) {
-    bleService.updateAlpha1SmO2(alpha1);
-}
+    private BLEEmulator bleService;
 
     private ServiceConnection bleServiceConnection = new ServiceConnection() {
         @Override
@@ -2547,7 +2545,8 @@ public class MainActivity extends AppCompatActivity {
             float a1v2x100 = (int)(100.0 * alpha1V2Windowed);
             alpha1V2RoundedWindowed = round(alpha1V2Windowed * 100) / 100.0;
             if (sharedPreferences.getBoolean(ENABLE_SENSOR_EMULATION, false) && bleService != null) {
-                bleService.lastHR = (int) a1v2x100;
+                bleService.lastHR = data.hr;
+                bleService.updateAlpha1SmO2(alpha1V2Windowed);
             }
             Log.d(TAG,"a1v2windowed "+alpha1V2Windowed+" a1v2x100 "+a1v2x100);
             prevA1TimestampMS = currentTimeMS;
