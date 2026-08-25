@@ -66,19 +66,18 @@ import androidx.core.app.NotificationCompat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class BLEEmulator extends Service {
     private static final String TAG = BLEEmulator.class.getSimpleName();
     private static final int ONGOING_NOTIFICATION_ID = 9999;
     private static final String CHANNEL_DEFAULT_IMPORTANCE = "csc_ble_channel";
     private static final String MAIN_CHANNEL_NAME = "BLEEmu";
-     // Service Oxygène Musculaire (SmO2 / Moxy) pour diffuser alpha1
-    public static final ParcelUuid SMO2_SERVICE_UUID = ParcelUuid.fromString("00001831-0000-1000-8000-00805f9b34fb");
-    public static final UUID SMO2_MEASUREMENT_UUID = UUID.fromString("00002ac0-0000-1000-8000-00805f9b34fb");
-    public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
-    private BluetoothGattCharacteristic smo2Char;
-    private BluetoothGattService smo2Service;
+    // Service Pulse Oximeter (SIG standard) utilisé pour diffuser alpha1 sous forme de "SpO2"
+    public static final ParcelUuid SMO2_SERVICE_UUID = ParcelUuid.fromString("00001822-0000-1000-8000-00805f9b34fb");
+    public static final UUID SMO2_MEASUREMENT_UUID = UUID.fromString("00002a5f-0000-1000-8000-00805f9b34fb");
+    public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     // Checks that the callback that is done after a BluetoothGattServer.addService() has been complete.
     // More services cannot be added until the callback has completed successfully
@@ -87,9 +86,10 @@ public class BLEEmulator extends Service {
     // bluetooth API
     private BluetoothManager mBluetoothManager;
     private BluetoothGattServer mBluetoothGattServer;
+
     private BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     // notification subscribers
-    private Set<BluetoothDevice> mRegisteredDevices = new HashSet<>();
+    private final Set<BluetoothDevice> mRegisteredDevices = new HashSet<>();
 
     // last wheel and crank (speed/cadence) information to send to CSCProfile
     private long cumulativeWheelRevolution = 0;
@@ -760,7 +760,8 @@ public class BLEEmulator extends Service {
                                              boolean preparedWrite, boolean responseNeeded,
                                              int offset, byte[] value) {
             Log.d(TAG,"onDescriptorWriteRequest");
-            if (FatMaxxerBLEProfiles.CLIENT_CONFIG.equals(descriptor.getUuid())) {
+            if (CLIENT_CHARACTERISTIC_CONFIG.equals(descriptor.getUuid())
+                    || FatMaxxerBLEProfiles.CLIENT_CONFIG.equals(descriptor.getUuid())) {
                 Log.d(TAG,"onDescriptorWriteRequest: match uuid");
                 if (Arrays.equals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, value)) {
                     Log.d(TAG, "CONNECTED: " + device);
@@ -775,7 +776,7 @@ public class BLEEmulator extends Service {
                             requestId,
                             BluetoothGatt.GATT_SUCCESS,
                             0,
-                            null);
+                            value);
                 }
             } else {
                 Log.w(TAG, "Unknown descriptor write request");
@@ -805,8 +806,8 @@ public class BLEEmulator extends Service {
         }
     }
 
- /**
-     * Cree le service GATT Oxygene Musculaire (SmO2)
+    /**
+     * Crée le service GATT Pulse Oximeter (SIG standard) utilisé pour diffuser alpha1
      */
     private BluetoothGattService createSmO2Service() {
         BluetoothGattService service = new BluetoothGattService(
@@ -831,7 +832,22 @@ public class BLEEmulator extends Service {
     }
 
     /**
-     * Envoie la valeur alpha1 convertie en % SmO2 au Wahoo ACE (ex: alpha1 = 0.75 -> 75.0%)
+     * Encode une valeur décimale en IEEE-11073 16-bit SFLOAT (little-endian).
+     * exponent = -1 -> une décimale de précision (ex: 7.5)
+     * exponent =  0 -> valeur entière (ex: 75)
+     */
+    private byte[] toSFloat(double value, int exponent) {
+        int mantissa = (int) Math.round(value / Math.pow(10, exponent));
+        // clamp à 12 bits signés pour éviter un débordement silencieux
+        if (mantissa > 2047) mantissa = 2047;
+        if (mantissa < -2048) mantissa = -2048;
+        int encoded = ((exponent & 0xF) << 12) | (mantissa & 0xFFF);
+        return new byte[] { (byte) (encoded & 0xFF), (byte) ((encoded >> 8) & 0xFF) };
+    }
+
+    /**
+     * Envoie alpha1 (encodé comme "SpO2 %") + le pouls réel au Wahoo ACE via le
+     * service Pulse Oximeter standard. Ex: alpha1 = 0.75 -> 7.5 affiché comme SpO2.
      */
     public void updateAlpha1SmO2(double alpha1) {
         if (mBluetoothGattServer == null) return;
@@ -841,15 +857,17 @@ public class BLEEmulator extends Service {
         BluetoothGattCharacteristic charac = service.getCharacteristic(SMO2_MEASUREMENT_UUID);
         if (charac == null) return;
 
-        int smo2Val = (int) Math.round(alpha1 * 1000.0); // 0.75 -> 750 (dixièmes de %)
-        if (smo2Val < 0) smo2Val = 0;
-        if (smo2Val > 1000) smo2Val = 1000;
+        double spo2Display = alpha1 * 10.0; // 0.75 -> 7.5
 
-        byte[] payload = new byte[4];
-        payload[0] = 0x00; // Flags Low
-        payload[1] = 0x00; // Flags High
-        payload[2] = (byte) (smo2Val & 0xFF); // Saturation Low
-        payload[3] = (byte) ((smo2Val >> 8) & 0xFF); // Saturation High
+        byte[] spo2Bytes = toSFloat(spo2Display, -1);
+        byte[] pulseBytes = toSFloat(lastHR, 0); // pouls réel, entier
+
+        byte[] payload = new byte[5];
+        payload[0] = 0x00; // Flags: 1 seul octet, aucun champ optionnel
+        payload[1] = spo2Bytes[0];
+        payload[2] = spo2Bytes[1];
+        payload[3] = pulseBytes[0];
+        payload[4] = pulseBytes[1];
 
         charac.setValue(payload);
         for (BluetoothDevice device : mRegisteredDevices) {
