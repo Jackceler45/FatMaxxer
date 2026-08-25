@@ -2139,7 +2139,9 @@ public class MainActivity extends AppCompatActivity {
 
     boolean bleServiceStarted = false;
     boolean mBound = false;
-    BLEEmulator bleService = null;
+    if (bleService != null) {
+    bleService.updateAlpha1SmO2(alpha1);
+}
 
     private ServiceConnection bleServiceConnection = new ServiceConnection() {
         @Override
