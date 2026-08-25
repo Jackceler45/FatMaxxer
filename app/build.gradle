@@ -1,78 +1,33 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 33
+    namespace 'com.example.ble'
+    compileSdk 34
 
-    def versionPropsFile = rootProject.file('version.properties')
-    if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
-        versionProps.load(new FileInputStream(versionPropsFile))
-        def String versionNameFromProps = versionProps['VERSION_NAME']
-        def String versionCodeStringFromProps = versionProps['VERSION_CODE']
-        def versionCodeIntegerFromProps = versionCodeStringFromProps.toInteger()
-        defaultConfig {
-            applicationId "online.fatmaxxer.publicRelease1"
-            versionCode versionCodeIntegerFromProps
-            versionName versionNameFromProps
-            minSdkVersion 24
-            targetSdkVersion 33
-            testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        }
+    defaultConfig {
+        applicationId "com.example.ble"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
     }
-    else {
-        throw new GradleException("Could not read version.properties")
-    }
-
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-// Breaks AndroidManifest.xml
-//        debug {
-//            applicationIdSuffix '.debug'
-//        }
     }
-
-    defaultConfig {
-        multiDexEnabled true
-    }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    sourceSets {
-        main {
-            res {
-                srcDirs 'src/main/res', 'src/main/res/values-nl'
-            }
-        }
-    }
-    namespace 'online.fatmaxxer.publicRelease1'
 }
 
 dependencies {
-    implementation files('libs/polar-ble-sdk.aar')
-    implementation files('libs/polar-protobuf-release.aar')
-    implementation files('libs/polar-protobuf-release.aar')
-    implementation files('libs/android_antlib_4-14-0.jar')
-    implementation 'com.jjoe64:graphview:4.2.2'
-    implementation 'com.google.protobuf:protobuf-javalite:3.14.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.4'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'commons-io:commons-io:2.8.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation "androidx.core:core-ktx:1.3.2"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.preference:preference:1.1.0-alpha05'
-    implementation 'androidx.fragment:fragment:1.2.5'
-    //implementation fileTree(dir: '/home/ipeake/sandbox/ejml/ejml-v0.40-libs', include: ['*.aar', '*.jar'], exclude: [])
-    implementation fileTree(dir: 'libs/ejml-v0.40-libs', include: ['*.aar', '*.jar'], exclude: [])
-    //testImplementation 'junit:junit:4.13.1'
-    //androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    //androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
