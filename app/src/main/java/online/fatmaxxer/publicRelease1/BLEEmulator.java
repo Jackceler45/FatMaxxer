@@ -72,6 +72,10 @@ public class BLEEmulator extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 9999;
     private static final String CHANNEL_DEFAULT_IMPORTANCE = "csc_ble_channel";
     private static final String MAIN_CHANNEL_NAME = "BLEEmu";
+      // Service Oxygène Musculaire (SmO2 / Moxy) pour diffuser alpha1
+    public static final ParcelUuid SMO2_SERVICE_UUID = ParcelUuid.fromString("00001814-0000-1000-8000-00805f9b34fb");
+    public static final UUID SMO2_MEASUREMENT_UUID = UUID.fromString("00002a5e-0000-1000-8000-00805f9b34fb");
+    public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     // Checks that the callback that is done after a BluetoothGattServer.addService() has been complete.
     // More services cannot be added until the callback has completed successfully
@@ -385,11 +389,11 @@ public class BLEEmulator extends Service {
                 .build();
 
         AdvertiseData advScanResponse = new AdvertiseData.Builder()
-//                .setIncludeDeviceName(true)
-                .addServiceUuid(new ParcelUuid(FatMaxxerBLEProfiles.CSC_SERVICE))
+                .addServiceUuid(SMO2_SERVICE_UUID)
                 .addServiceUuid(new ParcelUuid(FatMaxxerBLEProfiles.HR_SERVICE))
                 .addServiceUuid(new ParcelUuid(FatMaxxerBLEProfiles.RSC_SERVICE))
                 .build();
+
 
         mBluetoothLeAdvertiser
                 .startAdvertising(settings, advData, advScanResponse, mAdvertiseCallback);
@@ -416,15 +420,12 @@ public class BLEEmulator extends Service {
             return;
         }
 
-        btServiceInitialized = false;
-        // TODO: enable either 1 of them or both of them according to user selection
-        if (mBluetoothGattServer.addService(FatMaxxerBLEProfiles.createCSCService(
-                (byte)(FatMaxxerBLEProfiles.CSC_FEATURE_WHEEL_REV | FatMaxxerBLEProfiles.CSC_FEATURE_CRANK_REV)))) {
-            Log.d(TAG, "CSC service enabled");
+           btServiceInitialized = false;
+        if (mBluetoothGattServer.addService(createSmO2Service())) {
+            Log.d(TAG, "SmO2 service enabled");
         } else {
-            Log.d(TAG, "Failed to add CSCP to bluetooth layer");
+            Log.d(TAG, "Failed to add SmO2 service to bluetooth layer");
         }
-        // We cannot add another service until the callback for the previous service has completed
         while (!btServiceInitialized);
 
 //        btServiceInitialized = false;
@@ -801,4 +802,55 @@ public class BLEEmulator extends Service {
         }
     }
 
+ /**
+     * Cree le service GATT Oxygene Musculaire (SmO2)
+     */
+    private BluetoothGattService createSmO2Service() {
+        BluetoothGattService service = new BluetoothGattService(
+                SMO2_SERVICE_UUID.getUuid(),
+                BluetoothGattService.SERVICE_TYPE_PRIMARY
+        );
+
+        BluetoothGattCharacteristic smo2Measurement = new BluetoothGattCharacteristic(
+                SMO2_MEASUREMENT_UUID,
+                BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                BluetoothGattCharacteristic.PERMISSION_NONE
+        );
+
+        BluetoothGattDescriptor configDescriptor = new BluetoothGattDescriptor(
+                CLIENT_CHARACTERISTIC_CONFIG,
+                BluetoothGattDescriptor.PERMISSION_READ | BluetoothGattDescriptor.PERMISSION_WRITE
+        );
+        smo2Measurement.addDescriptor(configDescriptor);
+
+        service.addCharacteristic(smo2Measurement);
+        return service;
+    }
+
+    /**
+     * Envoie la valeur alpha1 convertie en % SmO2 au Wahoo ACE (ex: alpha1 = 0.75 -> 75.0%)
+     */
+    public void updateAlpha1SmO2(double alpha1) {
+        if (mBluetoothGattServer == null) return;
+        BluetoothGattService service = mBluetoothGattServer.getService(SMO2_SERVICE_UUID.getUuid());
+        if (service == null) return;
+
+        BluetoothGattCharacteristic charac = service.getCharacteristic(SMO2_MEASUREMENT_UUID);
+        if (charac == null) return;
+
+        int smo2Val = (int) Math.round(alpha1 * 1000.0); // 0.75 -> 750 (dixièmes de %)
+        if (smo2Val < 0) smo2Val = 0;
+        if (smo2Val > 1000) smo2Val = 1000;
+
+        byte[] payload = new byte[4];
+        payload[0] = 0x00; // Flags Low
+        payload[1] = 0x00; // Flags High
+        payload[2] = (byte) (smo2Val & 0xFF); // Saturation Low
+        payload[3] = (byte) ((smo2Val >> 8) & 0xFF); // Saturation High
+
+        charac.setValue(payload);
+        for (BluetoothDevice device : mRegisteredDevices) {
+            mBluetoothGattServer.notifyCharacteristicChanged(device, charac, false);
+        }
+    }
 }
