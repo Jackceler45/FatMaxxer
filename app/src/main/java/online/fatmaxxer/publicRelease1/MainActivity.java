@@ -2139,7 +2139,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean bleServiceStarted = false;
     boolean mBound = false;
-    if (bleService != null) {
+  if (bleService != null) {
     bleService.updateAlpha1SmO2(alpha1);
 }
 
