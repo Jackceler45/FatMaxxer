@@ -72,10 +72,13 @@ public class BLEEmulator extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 9999;
     private static final String CHANNEL_DEFAULT_IMPORTANCE = "csc_ble_channel";
     private static final String MAIN_CHANNEL_NAME = "BLEEmu";
-      // Service Oxygène Musculaire (SmO2 / Moxy) pour diffuser alpha1
-    public static final ParcelUuid SMO2_SERVICE_UUID = ParcelUuid.fromString("00001814-0000-1000-8000-00805f9b34fb");
-    public static final UUID SMO2_MEASUREMENT_UUID = UUID.fromString("00002a5e-0000-1000-8000-00805f9b34fb");
+     // Service Oxygène Musculaire (SmO2 / Moxy) pour diffuser alpha1
+    public static final ParcelUuid SMO2_SERVICE_UUID = ParcelUuid.fromString("00001831-0000-1000-8000-00805f9b34fb");
+    public static final UUID SMO2_MEASUREMENT_UUID = UUID.fromString("00002ac0-0000-1000-8000-00805f9b34fb");
     public static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+
+    private BluetoothGattCharacteristic smo2Char;
+    private BluetoothGattService smo2Service;
 
     // Checks that the callback that is done after a BluetoothGattServer.addService() has been complete.
     // More services cannot be added until the callback has completed successfully
