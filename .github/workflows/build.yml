@@ -1,107 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+name: Android CI Build
 
-    <SwitchPreferenceCompat
-        app:key="audioOutputEnabled"
-        app:title="@string/EnableAudioUpdates"
-        app:summary="@string/Alpha1UpdatesViaAudio"/>
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
 
-    <SwitchPreferenceCompat
-        app:key="notificationsEnabled"
-        app:title="@string/EnableNotificationUpdates"
-        app:summary="@string/Alpha1UpdatesViaOngoingNotification"/>
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    <ListPreference
-        app:key="notificationDetail"
-        app:title="@string/NotificationDetail"
-        app:summary=""
-        app:defaultValue="full"
-        app:entries="@array/notificationDetailEntries"
-        app:useSimpleSummaryProvider="true"
-        app:entryValues="@array/notificationDetailValues"/>
+    steps:
+    - name: Checkout du code
+      uses: actions/checkout@v4
 
-    <SwitchPreferenceCompat
-        app:key="keepScreenOn"
-        app:title="@string/KeepScreenOn"
-        app:summary=""/>
+    - name: Configuration de Java 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
 
-    <SwitchPreferenceCompat
-        app:key="removeArtifacts"
-        app:title="Remove Artifacts"
-        app:defaultValue="true"
-        app:summary="RR intervals deemed to be artifacts will be ignored"/>
+    - name: Rendre Gradle exécutable
+      run: chmod +x ./gradlew
 
-    <ListPreference
-        app:key="artifactThreshold"
-        app:title="@string/ArtifactRejectionThreshold"
-        app:summary="@string/RRsDifferingByMoreThanPlusMinusThresholdFromThePreviousAreRejected"
-        app:defaultValue="Auto"
-        app:entries="@array/artifactThresholdEntries"
-        app:useSimpleSummaryProvider="true"
-        app:entryValues="@array/artifactThresholdEntryValues"/>
-
-    <EditTextPreference
-        app:key="alpha1CalcPeriod"
-        app:title="@string/Alpha1InterCalculationPeriodSeconds"
-        android:digits="0123456789"
-        android:maxLength="4"
-        app:defaultValue="20"
-        app:useSimpleSummaryProvider="true"
-        app:summary="@string/TimeInSecondsToWaitBetweenAlpha1CalculationsGreaterThanOrEqualToFiveSeconds"/>
-
-    <MultiSelectListPreference
-        app:dialogTitle="@string/SelectGraphFeatures"
-        app:key="graphFeaturesSelectorKey"
-        app:summary=""
-        app:title="@string/SelectGraphFeatures"
-        app:entries="@array/graphFeaturesEntries"
-        app:entryValues="@array/graphFeaturesValues"
-        app:defaultValue="@array/graphFeaturesDefaultValues" />
-
-    <EditTextPreference
-        app:key="polarDeviceID"
-        app:title="@string/PreferredDeviceIDHex"
-        app:useSimpleSummaryProvider="true"
-        app:summary="@string/HexidecimalStringEightCharactersAutoSetToFirstConnectedDevice"/>
-
-    <SwitchPreferenceCompat
-        app:key="enableECG"
-        app:title="Enable ECG artifact logging"
-        app:defaultValue="true"
-        app:summary="Enable ECG logging for artifacts"/>
-
-    <SwitchPreferenceCompat
-        app:key="enableReplay"
-        app:title="Enable Log Replay"
-        app:summary="Enable log replay (disable auto-start)"/>
-
-    <SwitchPreferenceCompat
-        app:key="enableSensorEmulation"
-        app:title="Enable BLE Sensor Emulation"
-        app:summary="Try to emulate a BLE sensor transmitting a1 (requires restart)"/>
-
-    <MultiSelectListPreference
-        app:dialogTitle="@string/SelectReplayGraphFeatures"
-        app:key="graphReplayFeaturesSelectorKey"
-        app:summary=""
-        app:title="@string/SelectReplayGraphFeatures"
-        app:entries="@array/graphFeaturesEntries"
-        app:entryValues="@array/graphFeaturesValues"
-        app:defaultValue="@array/graphReplayFeaturesDefaultValues" />
-
-    <EditTextPreference
-        app:key="lambdaPref"
-        app:title="@string/LambdaInteger"
-        app:summary="@string/ValueOfLambdaForSmoothnessPriors"
-        android:digits="0123456789"
-        app:defaultValue="500"
-        app:useSimpleSummaryProvider="true"
-        android:maxLength="3" />
-
-    <SwitchPreferenceCompat
-        app:key="audioOutputOnZoneChane"
-        app:title="@string/AudioOutputOnZoneChange"
-        app:summary="Audio output only on zone change"/>
-
-</PreferenceScreen>
+    - name: Assemblage APK
+      run: ./gradlew assembleDebug
