@@ -3,122 +3,105 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreferenceCompat
-        app:key="audioOutputEnabled"
-        app:title = "@string/EnableAudioUpdates"
-        app:summary="@string/Alpha1UpdatesViaAudio"/>
+        android:key="audioOutputEnabled"
+        android:title="@string/EnableAudioUpdates"
+        android:summary="@string/Alpha1UpdatesViaAudio"/>
 
     <SwitchPreferenceCompat
-        app:key="notificationsEnabled"
-        app:title="@string/EnableNotificationUpdates"
-        app:summary="@string/Alpha1UpdatesViaOngoingNotification"/>
+        android:key="notificationsEnabled"
+        android:title="@string/EnableNotificationUpdates"
+        android:summary="@string/Alpha1UpdatesViaOngoingNotification"/>
 
     <ListPreference
-        app:key="notificationDetail"
-        app:title="@string/NotificationDetail"
-        app:summary=""
-        app:defaultValue="full"
-        app:entries="@array/notificationDetailEntries"
+        android:key="notificationDetail"
+        android:title="@string/NotificationDetail"
+        android:summary=""
+        android:defaultValue="full"
+        android:entries="@array/notificationDetailEntries"
         app:useSimpleSummaryProvider="true"
-        app:entryValues="@array/notificationDetailValues"/>
+        android:entryValues="@array/notificationDetailValues"/>
 
     <SwitchPreferenceCompat
-        app:key="keepScreenOn"
-        app:title="@string/KeepScreenOn"
-        app:summary=""/>
-
-    <!--
-    <SwitchPreferenceCompat
-        app:key="keepLogs"
-        app:title="@string/KeepLogs"
-        app:summary="@string/PreserveThisActivitysLogsOnExit"/>
-        -->
+        android:key="keepScreenOn"
+        android:title="@string/KeepScreenOn"
+        android:summary=""/>
 
     <SwitchPreferenceCompat
-        app:key="removeArtifacts"
-        app:title="Remove Artifacts"
-        app:defaultValue="true"
-        app:summary="RR intervals deemed to be artifacts will be ignored"/>
+        android:key="removeArtifacts"
+        android:title="Remove Artifacts"
+        android:defaultValue="true"
+        android:summary="RR intervals deemed to be artifacts will be ignored"/>
 
     <ListPreference
-        app:key="artifactThreshold"
-        app:title="@string/ArtifactRejectionThreshold"
-        app:summary="@string/RRsDifferingByMoreThanPlusMinusThresholdFromThePreviousAreRejected"
-        app:defaultValue="Auto"
-        app:entries="@array/artifactThresholdEntries"
+        android:key="artifactThreshold"
+        android:title="@string/ArtifactRejectionThreshold"
+        android:summary="@string/RRsDifferingByMoreThanPlusMinusThresholdFromThePreviousAreRejected"
+        android:defaultValue="Auto"
+        android:entries="@array/artifactThresholdEntries"
         app:useSimpleSummaryProvider="true"
-        app:entryValues="@array/artifactThresholdEntryValues"/>
+        android:entryValues="@array/artifactThresholdEntryValues"/>
 
     <EditTextPreference
-        app:key="alpha1CalcPeriod"
-        app:title="@string/Alpha1InterCalculationPeriodSeconds"
+        android:key="alpha1CalcPeriod"
+        android:title="@string/Alpha1InterCalculationPeriodSeconds"
         android:digits="0123456789"
         android:maxLength="4"
-        app:defaultValue="20"
+        android:defaultValue="20"
         app:useSimpleSummaryProvider="true"
-        app:summary="@string/TimeInSecondsToWaitBetweenAlpha1CalculationsGreaterThanOrEqualToFiveSeconds"/>
+        android:summary="@string/TimeInSecondsToWaitBetweenAlpha1CalculationsGreaterThanOrEqualToFiveSeconds"/>
 
     <MultiSelectListPreference
-        android:dialogTitle="@string/SelectGraphFeatures"
+        app:dialogTitle="@string/SelectGraphFeatures"
         android:key="graphFeaturesSelectorKey"
         android:summary=""
         android:title="@string/SelectGraphFeatures"
         android:entries="@array/graphFeaturesEntries"
         android:entryValues="@array/graphFeaturesValues"
-        android:defaultValue="@array/graphFeaturesDefaultValues"
-        />
+        android:defaultValue="@array/graphFeaturesDefaultValues" />
 
     <EditTextPreference
-        app:key="polarDeviceID"
-        app:title="@string/PreferredDeviceIDHex"
+        android:key="polarDeviceID"
+        android:title="@string/PreferredDeviceIDHex"
         app:useSimpleSummaryProvider="true"
-        app:summary="@string/HexidecimalStringEightCharactersAutoSetToFirstConnectedDevice"/>
-
-    <!--
-    <SwitchPreferenceCompat
-        app:key="experimental"
-        app:title="@string/DeveloperMode"
-        app:summary="@string/ExperimentalFeatures"/>
-        -->
+        android:summary="@string/HexidecimalStringEightCharactersAutoSetToFirstConnectedDevice"/>
 
     <SwitchPreferenceCompat
-        app:key="enableECG"
-        app:title="Enable ECG artifact logging"
+        android:key="enableECG"
+        android:title="Enable ECG artifact logging"
         android:defaultValue="true"
-        app:summary="Enable ECG logging for artifacts"/>
+        android:summary="Enable ECG logging for artifacts"/>
 
     <SwitchPreferenceCompat
-        app:key="enableReplay"
-        app:title="Enable Log Replay"
-        app:summary="Enable log replay (disable auto-start)"/>
+        android:key="enableReplay"
+        android:title="Enable Log Replay"
+        android:summary="Enable log replay (disable auto-start)"/>
 
     <SwitchPreferenceCompat
-        app:key="enableSensorEmulation"
-        app:title="Enable BLE Sensor Emulation"
-        app:summary="Try to emulate a BLE sensor transmitting a1 (requires restart)"/>
+        android:key="enableSensorEmulation"
+        android:title="Enable BLE Sensor Emulation"
+        android:summary="Try to emulate a BLE sensor transmitting a1 (requires restart)"/>
 
     <MultiSelectListPreference
-        android:dialogTitle="@string/SelectReplayGraphFeatures"
+        app:dialogTitle="@string/SelectReplayGraphFeatures"
         android:key="graphReplayFeaturesSelectorKey"
         android:summary=""
         android:title="@string/SelectReplayGraphFeatures"
         android:entries="@array/graphFeaturesEntries"
         android:entryValues="@array/graphFeaturesValues"
-        android:defaultValue="@array/graphReplayFeaturesDefaultValues"
-        />
+        android:defaultValue="@array/graphReplayFeaturesDefaultValues" />
 
     <EditTextPreference
-        app:key="lambdaPref"
-        app:title="@string/LambdaInteger"
-        app:summary="@string/ValueOfLambdaForSmoothnessPriors"
+        android:key="lambdaPref"
+        android:title="@string/LambdaInteger"
+        android:summary="@string/ValueOfLambdaForSmoothnessPriors"
         android:digits="0123456789"
-        app:defaultValue="500"
+        android:defaultValue="500"
         app:useSimpleSummaryProvider="true"
-        android:maxLength="3"
-        />
+        android:maxLength="3" />
 
     <SwitchPreferenceCompat
-        app:key="audioOutputOnZoneChane"
-        app:title="@string/AudioOutputOnZoneChange"
-        app:summary="Audio output only on zone change"/>
+        android:key="audioOutputOnZoneChane"
+        android:title="@string/AudioOutputOnZoneChange"
+        android:summary="Audio output only on zone change"/>
 
 </PreferenceScreen>
