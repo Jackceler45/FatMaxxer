@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="audioOutputEnabled"
         android:title="Activer les annonces vocales"
         android:summary="Annoncer Alpha1 via la voix"/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="notificationsEnabled"
         android:title="Activer les notifications"
         android:summary="Mise à jour Alpha1 en notification permanente"/>
@@ -17,15 +16,14 @@
         android:title="Détail des notifications"
         android:defaultValue="full"
         android:entries="@array/notificationDetailEntries"
-        android:entryValues="@array/notificationDetailValues"
-        app:useSimpleSummaryProvider="true"/>
+        android:entryValues="@array/notificationDetailValues"/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="keepScreenOn"
         android:title="Garder l'écran allumé"
         android:summary=""/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="removeArtifacts"
         android:title="Supprimer les artefacts"
         android:defaultValue="true"
@@ -37,8 +35,7 @@
         android:summary="RRs différant de plus du seuil par rapport au précédent ignorés"
         android:defaultValue="Auto"
         android:entries="@array/artifactThresholdEntries"
-        android:entryValues="@array/artifactThresholdEntryValues"
-        app:useSimpleSummaryProvider="true"/>
+        android:entryValues="@array/artifactThresholdEntryValues"/>
 
     <EditTextPreference
         android:key="alpha1CalcPeriod"
@@ -46,35 +43,33 @@
         android:digits="0123456789"
         android:maxLength="4"
         android:defaultValue="20"
-        android:summary="Temps en secondes entre les calculs d'Alpha1 (>= 5s)"
-        app:useSimpleSummaryProvider="true"/>
+        android:summary="Temps en secondes entre les calculs d'Alpha1 (>= 5s)"/>
 
     <MultiSelectListPreference
         android:key="graphFeaturesSelectorKey"
         android:title="Sélectionner les courbes du graphique"
-        app:dialogTitle="Sélectionner les courbes du graphique"
+        android:dialogTitle="Sélectionner les courbes du graphique"
         android:entries="@array/graphFeaturesEntries"
         android:entryValues="@array/graphFeaturesValues"
-        android:defaultValue="@array/graphFeaturesDefaultValues" />
+        android:defaultValue="@array/graphFeaturesDefaultValues"/>
 
     <EditTextPreference
         android:key="polarDeviceID"
         android:title="ID du capteur Polar (Hex)"
-        android:summary="Chaîne hexadécimale de 8 caractères (Auto = premier connecté)"
-        app:useSimpleSummaryProvider="true"/>
+        android:summary="Chaîne hexadécimale de 8 caractères (Auto = premier connecté)"/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="enableECG"
         android:title="Activer le journal ECG"
         android:defaultValue="true"
         android:summary="Enregistrer l'ECG pour les artefacts"/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="enableReplay"
         android:title="Activer la relecture de logs"
         android:summary="Relecture de fichiers log (désactive le démarrage auto)"/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="enableSensorEmulation"
         android:title="Activer l'émulation de capteur BLE"
         android:summary="Émuler un capteur BLE transmettant a1"/>
@@ -82,10 +77,10 @@
     <MultiSelectListPreference
         android:key="graphReplayFeaturesSelectorKey"
         android:title="Courbes en mode relecture"
-        app:dialogTitle="Courbes en mode relecture"
+        android:dialogTitle="Courbes en mode relecture"
         android:entries="@array/graphFeaturesEntries"
         android:entryValues="@array/graphFeaturesValues"
-        android:defaultValue="@array/graphReplayFeaturesDefaultValues" />
+        android:defaultValue="@array/graphReplayFeaturesDefaultValues"/>
 
     <EditTextPreference
         android:key="lambdaPref"
@@ -93,10 +88,9 @@
         android:summary="Valeur de Lambda pour le lissage"
         android:digits="0123456789"
         android:defaultValue="500"
-        android:maxLength="3"
-        app:useSimpleSummaryProvider="true"/>
+        android:maxLength="3"/>
 
-    <SwitchPreferenceCompat
+    <SwitchPreference
         android:key="audioOutputOnZoneChane"
         android:title="Annonce audio sur changement de zone"
         android:summary="Sortie audio uniquement au changement de zone"/>
