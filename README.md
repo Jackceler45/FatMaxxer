@@ -170,3 +170,4 @@ Replay is at up to 60x real time.
 - GraphView (https://github.com/jjoe64/GraphView)
 - Bruce Rogers' blog has a wealth of information (http://www.muscleoxygentraining.com/p/index.html).
   Bruce has been extremely active with early testing and usability feedback.
+  
