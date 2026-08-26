@@ -4,104 +4,101 @@
 
     <SwitchPreferenceCompat
         android:key="audioOutputEnabled"
-        android:title="@string/EnableAudioUpdates"
-        android:summary="@string/Alpha1UpdatesViaAudio"/>
+        android:title="Activer les annonces vocales"
+        android:summary="Annoncer Alpha1 via la voix"/>
 
     <SwitchPreferenceCompat
         android:key="notificationsEnabled"
-        android:title="@string/EnableNotificationUpdates"
-        android:summary="@string/Alpha1UpdatesViaOngoingNotification"/>
+        android:title="Activer les notifications"
+        android:summary="Mise à jour Alpha1 en notification permanente"/>
 
     <ListPreference
         android:key="notificationDetail"
-        android:title="@string/NotificationDetail"
-        android:summary=""
+        android:title="Détail des notifications"
         android:defaultValue="full"
         android:entries="@array/notificationDetailEntries"
-        app:useSimpleSummaryProvider="true"
-        android:entryValues="@array/notificationDetailValues"/>
+        android:entryValues="@array/notificationDetailValues"
+        app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat
         android:key="keepScreenOn"
-        android:title="@string/KeepScreenOn"
+        android:title="Garder l'écran allumé"
         android:summary=""/>
 
     <SwitchPreferenceCompat
         android:key="removeArtifacts"
-        android:title="Remove Artifacts"
+        android:title="Supprimer les artefacts"
         android:defaultValue="true"
-        android:summary="RR intervals deemed to be artifacts will be ignored"/>
+        android:summary="Les intervalles RR considérés comme artefacts seront ignorés"/>
 
     <ListPreference
         android:key="artifactThreshold"
-        android:title="@string/ArtifactRejectionThreshold"
-        android:summary="@string/RRsDifferingByMoreThanPlusMinusThresholdFromThePreviousAreRejected"
+        android:title="Seuil de rejet des artefacts"
+        android:summary="RRs différant de plus du seuil par rapport au précédent ignorés"
         android:defaultValue="Auto"
         android:entries="@array/artifactThresholdEntries"
-        app:useSimpleSummaryProvider="true"
-        android:entryValues="@array/artifactThresholdEntryValues"/>
+        android:entryValues="@array/artifactThresholdEntryValues"
+        app:useSimpleSummaryProvider="true"/>
 
     <EditTextPreference
         android:key="alpha1CalcPeriod"
-        android:title="@string/Alpha1InterCalculationPeriodSeconds"
+        android:title="Période de calcul Alpha1 (s)"
         android:digits="0123456789"
         android:maxLength="4"
         android:defaultValue="20"
-        app:useSimpleSummaryProvider="true"
-        android:summary="@string/TimeInSecondsToWaitBetweenAlpha1CalculationsGreaterThanOrEqualToFiveSeconds"/>
+        android:summary="Temps en secondes entre les calculs d'Alpha1 (>= 5s)"
+        app:useSimpleSummaryProvider="true"/>
 
     <MultiSelectListPreference
-        app:dialogTitle="@string/SelectGraphFeatures"
         android:key="graphFeaturesSelectorKey"
-        android:summary=""
-        android:title="@string/SelectGraphFeatures"
+        android:title="Sélectionner les courbes du graphique"
+        app:dialogTitle="Sélectionner les courbes du graphique"
         android:entries="@array/graphFeaturesEntries"
         android:entryValues="@array/graphFeaturesValues"
         android:defaultValue="@array/graphFeaturesDefaultValues" />
 
     <EditTextPreference
         android:key="polarDeviceID"
-        android:title="@string/PreferredDeviceIDHex"
-        app:useSimpleSummaryProvider="true"
-        android:summary="@string/HexidecimalStringEightCharactersAutoSetToFirstConnectedDevice"/>
+        android:title="ID du capteur Polar (Hex)"
+        android:summary="Chaîne hexadécimale de 8 caractères (Auto = premier connecté)"
+        app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat
         android:key="enableECG"
-        android:title="Enable ECG artifact logging"
+        android:title="Activer le journal ECG"
         android:defaultValue="true"
-        android:summary="Enable ECG logging for artifacts"/>
+        android:summary="Enregistrer l'ECG pour les artefacts"/>
 
     <SwitchPreferenceCompat
         android:key="enableReplay"
-        android:title="Enable Log Replay"
-        android:summary="Enable log replay (disable auto-start)"/>
+        android:title="Activer la relecture de logs"
+        android:summary="Relecture de fichiers log (désactive le démarrage auto)"/>
 
     <SwitchPreferenceCompat
         android:key="enableSensorEmulation"
-        android:title="Enable BLE Sensor Emulation"
-        android:summary="Try to emulate a BLE sensor transmitting a1 (requires restart)"/>
+        android:title="Activer l'émulation de capteur BLE"
+        android:summary="Émuler un capteur BLE transmettant a1"/>
 
     <MultiSelectListPreference
-        app:dialogTitle="@string/SelectReplayGraphFeatures"
         android:key="graphReplayFeaturesSelectorKey"
-        android:summary=""
-        android:title="@string/SelectReplayGraphFeatures"
+        android:title="Courbes en mode relecture"
+        app:dialogTitle="Courbes en mode relecture"
         android:entries="@array/graphFeaturesEntries"
         android:entryValues="@array/graphFeaturesValues"
         android:defaultValue="@array/graphReplayFeaturesDefaultValues" />
 
     <EditTextPreference
         android:key="lambdaPref"
-        android:title="@string/LambdaInteger"
-        android:summary="@string/ValueOfLambdaForSmoothnessPriors"
+        android:title="Valeur Lambda"
+        android:summary="Valeur de Lambda pour le lissage"
         android:digits="0123456789"
         android:defaultValue="500"
-        app:useSimpleSummaryProvider="true"
-        android:maxLength="3" />
+        android:maxLength="3"
+        app:useSimpleSummaryProvider="true"/>
 
     <SwitchPreferenceCompat
         android:key="audioOutputOnZoneChane"
-        android:title="@string/AudioOutputOnZoneChange"
-        android:summary="Audio output only on zone change"/>
+        android:title="Annonce audio sur changement de zone"
+        android:summary="Sortie audio uniquement au changement de zone"/>
 
 </PreferenceScreen>
